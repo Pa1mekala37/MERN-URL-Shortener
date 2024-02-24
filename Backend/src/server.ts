@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://mern-url-shortener-1.onrender.com"],
+    origin: ["http://localhost:3000", "https://mern-url-shortener-1-k8qr.onrender.com"],
     credentials: true,
   })
 );
