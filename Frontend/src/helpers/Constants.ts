@@ -1,2 +1,2 @@
 export const serverUrl =
-  import.meta.env.VITE_SERVER_URL || "http://localhost:5001/api";
+  import.meta.env.VITE_SERVER_URL || "https://mern-url-shortener-1.onrender.com/api";
