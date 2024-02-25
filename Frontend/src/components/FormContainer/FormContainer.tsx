@@ -28,18 +28,14 @@ const FormContainer: React.FunctionComponent<IFormContainerProps> = (props) => {
         <div className="w-full h-full rounded-xl p-20 backdrop-brightness-50">
           <h2 className="text-white text-4xl text-center pb-4">URL Shortner</h2>
           <p className="text-white text-center pb-2 text-xl font-extralight">
-            paste your untidy link to shorten it
-          </p>
-          <p className="text-white text-center pb-4 text-sm font-thin">
-            free tool to shorten a URL or reduce link, Use our URL shortner to
-            create a shortened & neat link making it easy to use
+          Unleash the Power of Concise Connections with TinyLinker - Shorten, Share, Swiftly Connect!
           </p>
           <form onSubmit={handleSubmit}>
             <div className="flex">
               <div className="relative w-full">
-                {/* <div className="absolute inset-y-0 start-0 flex items-center ps-2 pointer-events-none text-slate-800">
-                  urlshortner.link /
-                </div> */}
+                <div className="absolute inset-y-0 start-0 flex items-center ps-2 pointer-events-none text-slate-800">
+                TinyLinker /
+                </div>
                 <input
                   type="text"
                   placeholder="add your link"
