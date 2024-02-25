@@ -37,9 +37,9 @@ const FormContainer: React.FunctionComponent<IFormContainerProps> = (props) => {
           <form onSubmit={handleSubmit}>
             <div className="flex">
               <div className="relative w-full">
-                <div className="absolute inset-y-0 start-0 flex items-center ps-2 pointer-events-none text-slate-800">
+                {/* <div className="absolute inset-y-0 start-0 flex items-center ps-2 pointer-events-none text-slate-800">
                   urlshortner.link /
-                </div>
+                </div> */}
                 <input
                   type="text"
                   placeholder="add your link"
