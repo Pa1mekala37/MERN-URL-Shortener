@@ -49,7 +49,12 @@ Make sure you have the following installed on your machine:
    ```bash
    npm install
 
-3. Start the backend server:
+3. Create a `.env` file in the `Backend` directory and add the following line, replacing `<your-mongodb-url>` with your MongoDB database URL:
+
+   ```bash
+   CONNECTION_STRING=<your-mongodb-url>
+
+4. Start the backend server:
 
    ```bash
    nodemon
@@ -70,5 +75,3 @@ Make sure you have the following installed on your machine:
 
    ```bash
    npm run dev
-
-
