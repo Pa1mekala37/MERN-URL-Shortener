@@ -18,6 +18,14 @@ app.use(
   })
 );
 
+app.get('/health-check', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'TinyLinker Application is up and running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use("/api/", shortUrl);
 
 app.listen(port, () => {
