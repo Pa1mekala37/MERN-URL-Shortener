@@ -11,6 +11,7 @@
     "build:all": "npm run build:frontend && npm run build && npm run copy:frontend",
     "copy:frontend": "mkdir -p frontend && cp -r ../Frontend/dist/* frontend/",
     "render:build": "npm install && npm run build:all",
+    "render:build:debug": "npm install && echo 'Building frontend...' && npm run build:frontend && echo 'Building backend...' && npm run build && echo 'Copying files...' && npm run copy:frontend && echo 'Build complete!'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pavan Mekala",
