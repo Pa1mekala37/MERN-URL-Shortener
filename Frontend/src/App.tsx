@@ -7,11 +7,13 @@ interface IAppProps {}
 
 const App: React.FunctionComponent<IAppProps> = () => {
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Header />
-      <Container />
+      <main className="flex-1">
+        <Container />
+      </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

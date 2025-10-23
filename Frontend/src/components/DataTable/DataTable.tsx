@@ -1,6 +1,5 @@
 import * as React from "react";
 import { UrlData } from "../../interface/UrlData";
-import { Link } from "react-router-dom";
 import { serverUrl } from "../../helpers/Constants";
 import axios from "axios";
 
@@ -11,112 +10,159 @@ interface IDataTableProps {
 
 const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
   const { data, updateReloadState } = props;
-  console.log("Data in DataTable is ", data);
-  const renderTableData = () => {
-    return data.map((item) => {
-      return (
-        <tr
-          key={item._id}
-          className="border-b text-white bg-gray-600 hover:bg-white hover:text-gray-800"
-        >
-          <td className="px-6 py-3 break-words">
-            <Link to={item.fullUrl} target="_blank" rel="noreferrer noopener">
-              {item.fullUrl}
-            </Link>
-          </td>
-          <td className="px-6 py-3">
-            <Link
-              to={`${serverUrl}/shortUrl/${item.shortUrl}`}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {item.shortUrl}
-            </Link>
-          </td>
-          <td className="px-6 py-3">{item.clicks}</td>
-          <td className="px-6 py-3">
-            <div className="flex content-center">
-              <div
-                className="cursor-pointer px-2"
-                onClick={() => copyToClipboard(item.shortUrl)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-6 h-6 fill-white-600"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z"
-                    clipRule="evenodd"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375Zm9.586 4.594a.75.75 0 0 0-1.172-.938l-2.476 3.096-.908-.907a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.116-.062l3-3.75Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div
-                className="cursor-pointer px-2"
-                onClick={() => deleteUrl(item._id)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-6 h-6 fill-red-500"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div>
-          </td>
-        </tr>
-      );
-    });
-  };
-  const copyToClipboard = async (url: string) => {
+  const [copiedId, setCopiedId] = React.useState<string>("");
+  const [deletingId, setDeletingId] = React.useState<string>("");
+
+  const copyToClipboard = async (url: string, id: string) => {
     try {
       await navigator.clipboard.writeText(`${serverUrl}/shortUrl/${url}`);
-      alert(`URL copied: ${serverUrl}/shortUrl/${url}`);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(""), 2000);
     } catch (error) {
       console.log(error);
     }
   };
 
   const deleteUrl = async (id: string) => {
-    const response = await axios.delete(`${serverUrl}/shortUrl/${id}`);
-    console.log(response);
-    updateReloadState();
+    if (window.confirm("Are you sure you want to delete this URL?")) {
+      setDeletingId(id);
+      try {
+        await axios.delete(`${serverUrl}/shortUrl/${id}`);
+        updateReloadState();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setDeletingId("");
+      }
+    }
   };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const truncateUrl = (url: string, maxLength: number = 50) => {
+    if (url.length <= maxLength) return url;
+    return url.substring(0, maxLength) + '...';
+  };
+
+  if (data.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <div className="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-semibold text-gray-600 mb-2">No URLs yet</h3>
+          <p className="text-gray-500">Create your first short URL to get started!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto pt-2 pb-10">
-      <div className="relative overflow-x-auto shadow-sm sm:rounded-lg">
-        <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500">
-          <thead className="text-md uppercase text-gray-50 bg-gray-700">
-            <tr>
-              <th scope="col" className="px-6 py-3 w-6/12">
-                FullUrl
-              </th>
-              <th scope="col" className="px-6 py-3 w-3/12">
-                ShortUrl
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Clicks
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>{renderTableData()}</tbody>
-        </table>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">Your Short URLs</h2>
+        <p className="text-gray-600">Manage and track your shortened links</p>
+      </div>
+
+      <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Original URL</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Short URL</th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Clicks</th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Created</th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {data.map((item, index) => (
+                <tr key={item._id} className="hover:bg-gray-50/50 transition-colors animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <a 
+                        href={item.fullUrl} 
+                        target="_blank" 
+                        rel="noreferrer noopener"
+                        className="text-blue-600 hover:text-blue-800 font-medium max-w-xs truncate"
+                        title={item.fullUrl}
+                      >
+                        {truncateUrl(item.fullUrl)}
+                      </a>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-2">
+                      <a
+                        href={`${serverUrl}/shortUrl/${item.shortUrl}`}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-purple-600 hover:text-purple-800 font-medium"
+                      >
+                        {item.shortUrl}
+                      </a>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      {item.clicks}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center text-sm text-gray-500">
+                    {formatDate(item.createdAt)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-center space-x-2">
+                      <button
+                        onClick={() => copyToClipboard(item.shortUrl, item._id)}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                        title="Copy to clipboard"
+                      >
+                        {copiedId === item._id ? (
+                          <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        )}
+                      </button>
+                      
+                      <button
+                        onClick={() => deleteUrl(item._id)}
+                        disabled={deletingId === item._id}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:opacity-50"
+                        title="Delete URL"
+                      >
+                        {deletingId === item._id ? (
+                          <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

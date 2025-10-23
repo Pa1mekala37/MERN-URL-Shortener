@@ -3,8 +3,33 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      backgroundImage: {
-        banner: "url('https://res.cloudinary.com/ddtzx1ohw/image/upload/v1708877965/My%20Projects/random/4k-programming-with-blue-eyeglasses-vj4l8y5fr5lihujl_vyqyow.png')",
+      animation: {
+        'fade-in-up': 'fadeInUp 0.6s ease-out',
+        'slide-in': 'slideIn 0.5s ease-out',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        fadeInUp: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(30px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        slideIn: {
+          '0%': {
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            transform: 'translateX(0)',
+          },
+        },
+      },
+      backdropBlur: {
+        xs: '2px',
       },
     },
   },

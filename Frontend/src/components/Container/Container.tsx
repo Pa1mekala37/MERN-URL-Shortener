@@ -10,16 +10,23 @@ interface IContainerProps {}
 const Container: React.FunctionComponent<IContainerProps> = () => {
   const [data, setData] = React.useState<UrlData[]>([]);
   const [reload, setReload] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const updateReloadState = (): void => {
     setReload(true);
   };
 
   const fetchTableData = async () => {
-    const response = await axios.get(`${serverUrl}/shortUrl`);
-    console.log("The response from server is : ", response);
-    setData(response.data);
-    setReload(false);
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`${serverUrl}/shortUrl`);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+      setReload(false);
+    }
   };
 
   React.useEffect(() => {
@@ -27,10 +34,18 @@ const Container: React.FunctionComponent<IContainerProps> = () => {
   }, [reload]);
 
   return (
-    <>
+    <div className="min-h-screen">
       <FormContainer updateReloadState={updateReloadState} />
-      <DataTable updateReloadState={updateReloadState} data={data} />
-    </>
+      {isLoading ? (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      ) : (
+        <DataTable updateReloadState={updateReloadState} data={data} />
+      )}
+    </div>
   );
 };
 
