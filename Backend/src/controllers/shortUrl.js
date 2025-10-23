@@ -1,6 +1,6 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
-import { urlModel } from "../model/shortUrl";
+import { urlModel } from "../model/shortUrl.js";
 
 // Validation middleware
 export const validateUrl = [
@@ -11,10 +11,7 @@ export const validateUrl = [
     .withMessage('URL is too long (maximum 2048 characters)')
 ];
 
-export const createUrl = async (
-  req: express.Request,
-  res: express.Response
-) => {
+export const createUrl = async (req, res) => {
   try {
     console.log("🔗 Creating new short URL...");
     console.log("📝 Request body:", req.body);
@@ -61,10 +58,7 @@ export const createUrl = async (
   }
 };
 
-export const getAllUrl = async (
-  req: express.Request,
-  res: express.Response
-) => {
+export const getAllUrl = async (req, res) => {
   try {
     console.log("📋 Fetching all URLs...");
     const shortUrls = await urlModel
@@ -96,7 +90,7 @@ export const getAllUrl = async (
   }
 };
 
-export const getUrl = async (req: express.Request, res: express.Response) => {
+export const getUrl = async (req, res) => {
   try {
     const { id } = req.params;
     console.log(`🔗 Redirecting short URL: ${id}`);
@@ -133,10 +127,7 @@ export const getUrl = async (req: express.Request, res: express.Response) => {
   }
 };
 
-export const deleteUrl = async (
-  req: express.Request,
-  res: express.Response
-) => {
+export const deleteUrl = async (req, res) => {
   try {
     const { id } = req.params;
     console.log(`🗑️ Deleting URL with ID: ${id}`);

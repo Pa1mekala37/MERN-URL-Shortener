@@ -1,20 +1,18 @@
 {
-  "name": "url-shortner-api",
+  "name": "tiny-linker-backend",
   "version": "1.0.0",
-  "description": "This project contains url shortner apis",
-  "main": "server.js",
+  "description": "Backend API for TinyLinker URL shortener",
+  "main": "src/index.js",
   "scripts": {
-    "build": "npx tsc",
-    "start": "npx tsc && node ./dist/server.js",
-    "dev": "nodemon",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "build": "npm run build:frontend && npm run copy:frontend",
     "build:frontend": "cd ../Frontend && npm install && npm run build",
-    "build:all": "npm run build:frontend && npm run build && npm run copy:frontend",
-    "copy:frontend": "mkdir -p frontend && cp -r ../Frontend/dist/* frontend/",
-    "render:build": "npm install && npm run build:all",
-    "render:build:debug": "npm install && echo 'Building frontend...' && npm run build:frontend && echo 'Building backend...' && npm run build && echo 'Copying files...' && npm run copy:frontend && echo 'Build complete!'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "copy:frontend": "mkdir -p frontend && cp -r ../Frontend/dist/* frontend/"
   },
+  "keywords": ["url-shortener", "express", "api"],
   "author": "Pavan Mekala",
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
@@ -25,18 +23,9 @@
     "mongoose": "^8.1.0",
     "nanoid": "^3.1.31",
     "compression": "^1.7.4",
-    "express-validator": "^7.0.1",
-    "typescript": "^5.3.3"
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/express-rate-limit": "^6.0.0",
-    "@types/helmet": "^4.0.0",
-    "@types/mongoose": "^5.11.97",
-    "@types/node": "^20.11.4",
-    "@types/compression": "^1.7.5",
-    "nodemon": "^3.0.3",
-    "ts-node": "^10.9.2"
+    "nodemon": "^3.0.3"
   }
 }

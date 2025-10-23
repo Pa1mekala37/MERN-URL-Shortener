@@ -5,9 +5,14 @@ import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import path from "path";
-import connectDb from "./config/dbConfig";
-import { performanceMonitor, logMemoryUsage } from "./utils/performance";
-import shortUrl from "./routes/shortUrl";
+import { fileURLToPath } from 'url';
+import connectDb from "./config/dbConfig.js";
+import { performanceMonitor, logMemoryUsage } from "./utils/performance.js";
+import shortUrl from "./routes/shortUrl.js";
+
+// ES module __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -134,7 +139,7 @@ app.use('*', (req, res) => {
 });
 
 // Global error handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err, req, res, next) => {
   console.error('💥 Global error handler triggered:', err);
   
   if (err.type === 'entity.parse.failed') {

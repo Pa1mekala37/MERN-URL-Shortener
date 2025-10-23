@@ -5,7 +5,7 @@ import {
   getAllUrl,
   getUrl,
   validateUrl,
-} from "../controllers/shortUrl";
+} from "../controllers/shortUrl.js";
 
 const router = express.Router();
 

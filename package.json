@@ -1,0 +1,19 @@
+{
+  "name": "tiny-linker",
+  "version": "1.0.0",
+  "description": "A modern URL shortener with React frontend and Express backend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --prefix Backend",
+    "dev:frontend": "npm run dev --prefix Frontend",
+    "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend",
+    "start": "npm run start --prefix Backend"
+  },
+  "keywords": ["url-shortener", "react", "express", "typescript"],
+  "author": "Pavan Mekala",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
