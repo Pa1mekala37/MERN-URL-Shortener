@@ -25,7 +25,8 @@
     "mongoose": "^8.1.0",
     "nanoid": "^3.1.31",
     "compression": "^1.7.4",
-    "express-validator": "^7.0.1"
+    "express-validator": "^7.0.1",
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -36,7 +37,6 @@
     "@types/node": "^20.11.4",
     "@types/compression": "^1.7.5",
     "nodemon": "^3.0.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "ts-node": "^10.9.2"
   }
 }
