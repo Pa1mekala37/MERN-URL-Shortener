@@ -76,19 +76,20 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
       </div>
 
       <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Original URL</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Short URL</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Clicks</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Created</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {data.map((item, index) => (
+        {Array.isArray(data) && data.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Original URL</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Short URL</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Clicks</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Created</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {data.map((item, index) => (
                 <tr key={item._id} className="hover:bg-gray-50/50 transition-colors animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
@@ -159,10 +160,17 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-gray-500 text-lg">
+              No URLs found. Create your first short URL above!
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

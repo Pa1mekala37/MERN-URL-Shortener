@@ -20,9 +20,17 @@ const Container: React.FunctionComponent<IContainerProps> = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(`${serverUrl}/shortUrl`);
-      setData(response.data);
+      // Handle the API response structure properly
+      if (response.data && response.data.data) {
+        setData(response.data.data);
+      } else if (Array.isArray(response.data)) {
+        setData(response.data);
+      } else {
+        setData([]);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setData([]);
     } finally {
       setIsLoading(false);
       setReload(false);
