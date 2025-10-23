@@ -7,10 +7,11 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "npm run dev --prefix Backend",
     "dev:frontend": "npm run dev --prefix Frontend",
-    "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend",
+    "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend && npm run copy:frontend",
+    "copy:frontend": "mkdir -p Backend/frontend && cp -r Frontend/dist/* Backend/frontend/",
     "start": "npm run start --prefix Backend"
   },
-  "keywords": ["url-shortener", "react", "express", "typescript"],
+  "keywords": ["url-shortener", "react", "express", "javascript"],
   "author": "Pavan Mekala",
   "license": "ISC",
   "devDependencies": {

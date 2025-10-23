@@ -8,7 +8,8 @@
     "start": "node src/index.js",
     "build": "npm run build:frontend && npm run copy:frontend",
     "build:frontend": "cd ../Frontend && npm install && npm run build",
-    "copy:frontend": "mkdir -p frontend && cp -r ../Frontend/dist/* frontend/"
+    "copy:frontend": "mkdir -p frontend && cp -r ../Frontend/dist/* frontend/",
+    "render:build": "npm run build"
   },
   "keywords": ["url-shortener", "express", "api"],
   "author": "Pavan Mekala",

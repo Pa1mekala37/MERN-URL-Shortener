@@ -13,14 +13,14 @@ The build errors have been resolved by:
 ```
 Service Type: Web Service
 Name: tiny-linker
-Root Directory: Backend
+Root Directory: (leave empty - use root directory)
 Environment: Node
 Node Version: 18.x (recommended)
 ```
 
 ### **Build & Start Commands**
 ```
-Build Command: npm run render:build
+Build Command: npm run build
 Start Command: npm start
 ```
 
