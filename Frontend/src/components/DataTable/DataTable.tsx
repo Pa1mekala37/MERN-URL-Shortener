@@ -13,7 +13,19 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
   const { data, updateReloadState } = props;
   const [copiedId, setCopiedId] = React.useState<string>("");
   const [deletingId, setDeletingId] = React.useState<string>("");
+  const [confirmDeleteId, setConfirmDeleteId] = React.useState<string>("");
   const { showSuccess, showError } = useToast();
+
+  // Cleanup confirmation timeout when component unmounts or confirmDeleteId changes
+  React.useEffect(() => {
+    if (confirmDeleteId) {
+      const timeout = setTimeout(() => {
+        setConfirmDeleteId("");
+      }, 3000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [confirmDeleteId]);
 
   const copyToClipboard = async (url: string, id: string) => {
     try {
@@ -46,8 +58,10 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
   };
 
   const deleteUrl = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this URL?")) {
+    if (confirmDeleteId === id) {
+      // Second click - proceed with deletion
       setDeletingId(id);
+      setConfirmDeleteId("");
       try {
         await axios.delete(`${serverUrl}/shortUrl/${id}`);
         updateReloadState();
@@ -58,6 +72,10 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
       } finally {
         setDeletingId("");
       }
+    } else {
+      // First click - show confirmation
+      setConfirmDeleteId(id);
+      showError("Click delete again to confirm");
     }
   };
 
@@ -170,11 +188,20 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
                       <button
                         onClick={() => deleteUrl(item._id)}
                         disabled={deletingId === item._id}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:opacity-50"
-                        title="Delete URL"
+                        className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 ${
+                          confirmDeleteId === item._id 
+                            ? 'text-red-600 bg-red-100 hover:bg-red-200' 
+                            : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                        }`}
+                        title={confirmDeleteId === item._id ? "Click again to confirm deletion" : "Delete URL"}
                       >
                         {deletingId === item._id ? (
                           <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                        ) : confirmDeleteId === item._id ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clipRule="evenodd" />
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
                         ) : (
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
