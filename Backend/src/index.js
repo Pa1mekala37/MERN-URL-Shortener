@@ -76,11 +76,11 @@ console.log("🌐 Setting up CORS configuration...");
 app.use(
   cors({
     origin: process.env.NODE_ENV === 'production' 
-      ? ['https://mern-url-shortener-1-k8qr.onrender.com']
+      ? ['https://tinylinker-cahw.onrender.com']
       : [
           "http://localhost:3000", 
           "http://localhost:5173",
-          "https://mern-url-shortener-1-k8qr.onrender.com"
+          "https://tinylinker-cahw.onrender.com"
         ],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],

@@ -31,6 +31,7 @@ const Container: React.FunctionComponent<IContainerProps> = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       setData([]);
+      // You could add a toast notification here if needed
     } finally {
       setIsLoading(false);
       setReload(false);

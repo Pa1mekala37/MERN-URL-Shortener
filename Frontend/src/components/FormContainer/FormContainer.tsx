@@ -27,7 +27,16 @@ const FormContainer: React.FunctionComponent<IFormContainerProps> = (props) => {
       setSuccess("URL shortened successfully!");
       updateReloadState();
     } catch (error: any) {
-      setError(error.response?.data?.message || "Something went wrong!");
+      console.error("Error creating URL:", error);
+      if (error.response?.data?.details) {
+        setError(error.response.data.details[0]?.msg || "Validation error");
+      } else if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else if (error.response?.data?.error) {
+        setError(error.response.data.error);
+      } else {
+        setError("Something went wrong! Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { nanoid } from "nanoid";
 
 const shortUrlSchema = new mongoose.Schema({
   fullUrl: {
@@ -58,6 +59,7 @@ shortUrlSchema.virtual('clickRate').get(function() {
 
 // Pre-save middleware to ensure protocol
 shortUrlSchema.pre('save', function(next) {
+  // Ensure protocol
   if (this.fullUrl && !this.fullUrl.startsWith('http')) {
     this.fullUrl = 'https://' + this.fullUrl;
   }

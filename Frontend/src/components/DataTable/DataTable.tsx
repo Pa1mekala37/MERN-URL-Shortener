@@ -15,11 +15,29 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
 
   const copyToClipboard = async (url: string, id: string) => {
     try {
-      await navigator.clipboard.writeText(`${serverUrl}/shortUrl/${url}`);
+      // For production, use the current domain, for development use localhost
+      const baseUrl = import.meta.env.MODE === 'development' 
+        ? 'http://localhost:5001' 
+        : window.location.origin;
+      await navigator.clipboard.writeText(`${baseUrl}/shortUrl/${url}`);
       setCopiedId(id);
       setTimeout(() => setCopiedId(""), 2000);
     } catch (error) {
-      console.log(error);
+      console.error("Error copying to clipboard:", error);
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = `${import.meta.env.MODE === 'development' ? 'http://localhost:5001' : window.location.origin}/shortUrl/${url}`;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(""), 2000);
+      } catch (fallbackError) {
+        console.error("Fallback copy failed:", fallbackError);
+        alert("Failed to copy to clipboard. Please copy manually.");
+      }
+      document.body.removeChild(textArea);
     }
   };
 
@@ -30,7 +48,8 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
         await axios.delete(`${serverUrl}/shortUrl/${id}`);
         updateReloadState();
       } catch (error) {
-        console.log(error);
+        console.error("Error deleting URL:", error);
+        alert("Failed to delete URL. Please try again.");
       } finally {
         setDeletingId("");
       }
@@ -108,7 +127,7 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-2">
                       <a
-                        href={`${serverUrl}/shortUrl/${item.shortUrl}`}
+                        href={`${import.meta.env.MODE === 'development' ? 'http://localhost:5001' : window.location.origin}/shortUrl/${item.shortUrl}`}
                         target="_blank"
                         rel="noreferrer noopener"
                         className="text-purple-600 hover:text-purple-800 font-medium"

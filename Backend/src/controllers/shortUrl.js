@@ -1,6 +1,7 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import { urlModel } from "../model/shortUrl.js";
+import { nanoid } from "nanoid";
 
 // Validation middleware
 export const validateUrl = [
@@ -42,8 +43,35 @@ export const createUrl = async (req, res) => {
 
     // Create new short URL
     console.log("✨ Creating new short URL...");
-    const newUrl = await urlModel.create({ fullUrl });
-    console.log("✅ Short URL created:", newUrl.shortUrl);
+    console.log("📝 Full URL to shorten:", fullUrl);
+    
+    // Generate unique shortUrl with retry mechanism
+    let shortUrl;
+    let attempts = 0;
+    let isUnique = false;
+    
+    while (!isUnique && attempts < 5) {
+      shortUrl = nanoid(8);
+      console.log(`🎲 Generated short URL (attempt ${attempts + 1}):`, shortUrl);
+      
+      const existing = await urlModel.findOne({ shortUrl });
+      if (!existing) {
+        isUnique = true;
+      } else {
+        attempts++;
+        console.log(`⚠️ Short URL already exists, retrying... (${attempts}/5)`);
+      }
+    }
+    
+    if (!isUnique) {
+      throw new Error('Failed to generate unique short URL after 5 attempts');
+    }
+    
+    const newUrl = await urlModel.create({ fullUrl, shortUrl });
+    console.log("✅ Short URL created successfully!");
+    console.log("🔗 Short URL:", newUrl.shortUrl);
+    console.log("📊 Full URL:", newUrl.fullUrl);
+    console.log("🆔 Document ID:", newUrl._id);
 
     res.status(201).json({
       message: 'URL shortened successfully',
@@ -51,6 +79,22 @@ export const createUrl = async (req, res) => {
     });
   } catch (error) {
     console.error('💥 Create URL error:', error);
+    
+    // Handle specific error types
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: error.message
+      });
+    }
+    
+    if (error.code === 11000) {
+      return res.status(409).json({
+        error: 'Duplicate entry',
+        message: 'Short URL already exists'
+      });
+    }
+    
     res.status(500).json({ 
       error: 'Internal server error',
       message: 'Failed to create short URL'
@@ -160,3 +204,4 @@ export const deleteUrl = async (req, res) => {
     });
   }
 };
+
