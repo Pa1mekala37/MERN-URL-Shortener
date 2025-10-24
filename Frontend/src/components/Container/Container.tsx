@@ -4,6 +4,7 @@ import { UrlData } from "../../interface/UrlData";
 import axios from "axios";
 import { serverUrl } from "../../helpers/Constants";
 import DataTable from "../DataTable/DataTable";
+import { useToast } from "../../context/ToastContext";
 
 interface IContainerProps {}
 
@@ -11,6 +12,7 @@ const Container: React.FunctionComponent<IContainerProps> = () => {
   const [data, setData] = React.useState<UrlData[]>([]);
   const [reload, setReload] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const { showError } = useToast();
 
   const updateReloadState = (): void => {
     setReload(true);
@@ -31,7 +33,7 @@ const Container: React.FunctionComponent<IContainerProps> = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       setData([]);
-      // You could add a toast notification here if needed
+      showError("Failed to load URLs. Please refresh the page.");
     } finally {
       setIsLoading(false);
       setReload(false);

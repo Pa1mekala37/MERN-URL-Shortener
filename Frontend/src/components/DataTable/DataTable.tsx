@@ -2,6 +2,7 @@ import * as React from "react";
 import { UrlData } from "../../interface/UrlData";
 import { serverUrl } from "../../helpers/Constants";
 import axios from "axios";
+import { useToast } from "../../context/ToastContext";
 
 interface IDataTableProps {
   data: UrlData[];
@@ -12,6 +13,7 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
   const { data, updateReloadState } = props;
   const [copiedId, setCopiedId] = React.useState<string>("");
   const [deletingId, setDeletingId] = React.useState<string>("");
+  const { showSuccess, showError } = useToast();
 
   const copyToClipboard = async (url: string, id: string) => {
     try {
@@ -22,6 +24,7 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
       await navigator.clipboard.writeText(`${baseUrl}/shortUrl/${url}`);
       setCopiedId(id);
       setTimeout(() => setCopiedId(""), 2000);
+      showSuccess("Short URL copied to clipboard!");
     } catch (error) {
       console.error("Error copying to clipboard:", error);
       // Fallback for older browsers
@@ -33,9 +36,10 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
         document.execCommand('copy');
         setCopiedId(id);
         setTimeout(() => setCopiedId(""), 2000);
+        showSuccess("Short URL copied to clipboard!");
       } catch (fallbackError) {
         console.error("Fallback copy failed:", fallbackError);
-        alert("Failed to copy to clipboard. Please copy manually.");
+        showError("Failed to copy to clipboard. Please copy manually.");
       }
       document.body.removeChild(textArea);
     }
@@ -47,9 +51,10 @@ const DataTable: React.FunctionComponent<IDataTableProps> = (props) => {
       try {
         await axios.delete(`${serverUrl}/shortUrl/${id}`);
         updateReloadState();
+        showSuccess("URL deleted successfully!");
       } catch (error) {
         console.error("Error deleting URL:", error);
-        alert("Failed to delete URL. Please try again.");
+        showError("Failed to delete URL. Please try again.");
       } finally {
         setDeletingId("");
       }
